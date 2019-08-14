@@ -9,6 +9,26 @@ import argparse
 import pickle
 import cv2
 
+
+# putText() renders the text to be displayed onto the output video
+def putText(violation_code):
+	font_style=cv2.FONT_HERSHEY_DUPLEX
+	position=(10,100)
+	font_size=0.8
+	font_thickness=2
+	text="violation : "
+	# draw the activity on the output frame
+	# text should be the violation code
+	#text = "activity: {}".format(label)
+	if (violation_code>0):
+		text= text + str(violation_code)
+		rgb_value=(0,0,255) #red when there is violation
+	else:
+		text= text + "none"
+		rgb_value=(0,255,0) #green when there is no violation
+		
+	cv2.putText(output,text,position,font_style,font_size,rgb_value,font_thickness)
+
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-m", "--model", required=True,
@@ -71,11 +91,9 @@ while True:
 	results = np.array(Q).mean(axis=0)
 	i = np.argmax(results)
 	label = lb.classes_[i]
-
-	# draw the activity on the output frame
-	text = "activity: {}".format(label)
-	cv2.putText(output, text, (35, 50), cv2.FONT_HERSHEY_SIMPLEX,
-		1.25, (0, 255, 0), 5)
+	
+	violation_code=0
+	putText(violation_code)
 
 	# check if the video writer is None
 	if writer is None:
