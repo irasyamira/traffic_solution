@@ -80,7 +80,8 @@ while True:
 	# check if the video writer is None
 	if writer is None:
 		# initialize our video writer
-		fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+		#fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+		fourcc = cv2.cv.CV_FOURCC(*"MJPG")
 		writer = cv2.VideoWriter(args["output"], fourcc, 30,
 			(W, H), True)
 
