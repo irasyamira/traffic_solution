@@ -9,6 +9,9 @@ import argparse
 import pickle
 import cv2
 
+# to supress AVX2 FMA warnings
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # putText() renders the text to be displayed onto the output video
 def putText(violation_code):
@@ -31,20 +34,15 @@ def putText(violation_code):
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-m", "--model", required=True,
-	help="path to trained serialized model")
-ap.add_argument("-l", "--label-bin", required=True,
-	help="path to  label binarizer")
-ap.add_argument("-i", "--input", required=True,
-	help="path to our input video")
-ap.add_argument("-o", "--output", required=True,
-	help="path to our output video")
-ap.add_argument("-s", "--size", type=int, default=128,
-	help="size of queue for averaging")
+ap.add_argument("-m", "--model", required=True,help="path to trained serialized model")
+ap.add_argument("-l", "--label-bin", required=True,help="path to  label binarizer")
+ap.add_argument("-i", "--input", required=True,help="path to our input video")
+ap.add_argument("-o", "--output", required=True,help="path to our output video")
+ap.add_argument("-s", "--size", type=int, default=128,help="size of queue for averaging")
 args = vars(ap.parse_args())
 
 # load the trained model and label binarizer from disk
-print("[INFO] loading model and label binarizer...")
+#print("[INFO] loading model and label binarizer...")
 model = load_model(args["model"])
 lb = pickle.loads(open(args["label_bin"], "rb").read())
 
@@ -100,14 +98,15 @@ while True:
 		# initialize our video writer
 		#fourcc = cv2.VideoWriter_fourcc(*"MJPG")
 		fourcc = cv2.cv.CV_FOURCC(*"MJPG")
-		writer = cv2.VideoWriter(args["output"], fourcc, 30,
-			(W, H), True)
+		writer = cv2.VideoWriter(args["output"],fourcc,30,(W,H),True)
 
 	# write the output frame to disk
 	writer.write(output)
 
 	# show the output image
 	cv2.imshow("Output", output)
+	#dir_path = os.path.dirname(os.path.realpath(__file__))
+	#open(str(dir_path) + "/output/lifting_128avg.avi","r")
 	key = cv2.waitKey(1) & 0xFF
 
 	# if the `q` key was pressed, break from the loop
@@ -115,6 +114,6 @@ while True:
 		break
 
 # release the file pointers
-print("[INFO] cleaning up...")
+#print("[INFO] cleaning up...")
 writer.release()
 vs.release()
