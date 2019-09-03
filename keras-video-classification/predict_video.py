@@ -1,5 +1,5 @@
 # USAGE
-# python predict_video.py --model model/activity.model --label-bin model/lb.pickle --input example_clips/lifting.mp4 --output output/lifting_128avg.avi --size 128
+# python predict_video.py --model model/activity.model --label-bin model/lb.pickle --input example_clips/stmarc_video.avi --output output/lifting_128avg.avi --size 128
 
 # import the necessary packages
 from keras.models import load_model
@@ -8,29 +8,40 @@ import numpy as np
 import argparse
 import pickle
 import cv2
+import datetime
 
 # to supress AVX2 FMA warnings
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
+averaging_on=False
+
 # putText() renders the text to be displayed onto the output video
 def putText(violation_code):
 	font_style=cv2.FONT_HERSHEY_DUPLEX
-	position=(10,100)
+	position0=(15,50)
+	position1=(15,75)
+	position2=(15,100)
 	font_size=0.8
 	font_thickness=2
-	text="violation : "
+	now = datetime.datetime.now()
+	text0=str(now)
+	text1="traffic light state : red"
+	#text2= "violation type : running over red light (" + str(violation_code) + ")"
+	text2= str(text)
+	rgb_value=(0,0,255) #red when there is violation
 	# draw the activity on the output frame
 	# text should be the violation code
-	#text = "activity: {}".format(label)
-	if (violation_code>0):
-		text= text + str(violation_code)
+	if (text2=="v"):
+		#text= text + str(violation_code)
 		rgb_value=(0,0,255) #red when there is violation
 	else:
-		text= text + "none"
+		#text= text + "none"
 		rgb_value=(0,255,0) #green when there is no violation
 		
-	cv2.putText(output,text,position,font_style,font_size,rgb_value,font_thickness)
+	cv2.putText(output,text0,position0,font_style,font_size,rgb_value,font_thickness)
+	cv2.putText(output,text1,position1,font_style,font_size,rgb_value,font_thickness)
+	cv2.putText(output,text2,position2,font_style,font_size,rgb_value,font_thickness)
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -89,9 +100,10 @@ while True:
 	results = np.array(Q).mean(axis=0)
 	i = np.argmax(results)
 	label = lb.classes_[i]
-	
-	violation_code=0
-	putText(violation_code)
+
+	text = "violation : {}".format(label)
+	#violation_code=2
+	putText(text)
 
 	# check if the video writer is None
 	if writer is None:

@@ -39,7 +39,7 @@ tp16
 cnumpy
 dtype
 p17
-(S'S14'
+(S'S10'
 p18
 I0
 I1
@@ -48,12 +48,12 @@ Rp20
 (I3
 S'|'
 p21
-NNNI14
+NNNI10
 I1
 I0
 tp22
 bI00
-S'football\x00\x00\x00\x00\x00\x00tennis\x00\x00\x00\x00\x00\x00\x00\x00weight_lifting'
+S'pass\x00\x00\x00\x00\x00\x00pedestrianybox\x00\x00\x00\x00\x00\x00'
 p23
 tp24
 bsS'y_type_'
